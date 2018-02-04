@@ -28,7 +28,9 @@ duttasourav@ufl.edu}
 \maketitle
 
 \begin{abstract}
-The project is focused on implementing and solving a multi-player clone of the classic Snake game as a OpenAI Gym \cite{sd1} environment. We propose to create the game catered to the Gym environment.
+The project is focused on implementing and solving a multi-player clone of the
+classic Snake game as a OpenAI Gym \cite{sd1} environment.
+We propose to create the game catered to the Gym environment.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -36,8 +38,27 @@ deep learning, reinforcement learning
 \end{IEEEkeywords}
 
 \section{Introduction}
-Recently we have seen a rise in controlling agents directly from high-dimensional inputs like vision and speech with deep learning combined with reinforcement learning \cite{sd3} \cite{sd5}. These are steps toward general artificial intelligence and these methods are directly applied to learn self play such as Alpha Go \cite{sd6} Atari \cite{sd3}. It has become evident that such algorithms achieve good performance on difficult problems without problem specific engineering. Also, it has been observed that the strategies are more complex than the environment. With traditional RL the rewards for a step was immediately available, but with games there can be complex strategies as the rewards can be a result of several consecutive steps. These methods use a wide variety of techniques like Markov decision process, discounted future reward, Q-learning \cite{sd5} and Policy gradient \cite{sd4}.\break
-This proposal aims at solving a multi-player snake game inspired by slither.io \cite{sd2} where snakes consume food to increase length and kills other snakes. The game will be developed as a OpenAI Gym \cite{sd2} environment which provides an interface between the game and the learning algorithm. It allows developers to focus on the learning environment rather than interacting with the game. It proposes how the agent can be trained using deep learning techniques along with related works and challenges. It also states the success criteria and improvements that can be applied to it.
+Recently we have seen a rise in controlling agents directly from
+high-dimensional inputs like vision and speech with deep learning combined
+with reinforcement learning \cite{sd3} \cite{sd5}. These are steps toward
+general artificial intelligence and these methods are directly applied to
+learn self play such as Alpha Go \cite{sd6} Atari \cite{sd3}. It has become
+evident that such algorithms achieve good performance on difficult problems
+without problem specific engineering. Also, it has been observed that the
+strategies are more complex than the environment. With traditional RL the
+rewards for a step was immediately available, but with games there can be
+complex strategies as the rewards can be a result of several consecutive steps.
+These methods use a wide variety of techniques like Markov decision process,
+discounted future reward, Q-learning \cite{sd5} and
+Policy gradient \cite{sd4}.\break
+This proposal aims at solving a multi-player snake game inspired by
+slither.io \cite{sd2} where snakes consume food to increase length and
+kills other snakes. The game will be developed as a
+OpenAI Gym \cite{sd2} environment which provides an interface between the game
+and the learning algorithm. It allows developers to focus on the learning
+environment rather than interacting with the game. It proposes how the agent
+can be trained using deep learning techniques along with related works and
+challenges. It also states the success criteria and improvements that can be applied to it.
 
 \section{Related Work}
 Watkins\cite{sp1} introduced Q- learning as a simple way for training agents to learn
@@ -70,12 +91,28 @@ constrained 1v1 match.
 
 \section{Proposed Work}
 \subsection*{The Game}
-In this project we aim to create a, AI based, multi-player snake game inspired by the online game \textit{slither.io}. Food items would appear randomly on the game board. The snakes would gain a unit length after every second food item consumed on the board. A snake would be considered dead if it hits the boundary or bumps into other snakes. This will make the snake move away from other snakes and survive longer, at the same time allowing bigger snakes to trap smaller snakes and kill them. The game would spawn two or more snakes and play until only one snake remains.\newline\par
+In this project we aim to create a, AI based, multi-player snake game inspired
+by the online game \textit{slither.io}. Food items would appear randomly on
+the game board. The snakes would gain a unit length after every second food
+item consumed on the board. A snake would be considered dead if it hits the
+boundary or bumps into other snakes. This will make the snake move away from
+other snakes and survive longer, at the same time allowing bigger snakes to
+trap smaller snakes and kill them. The game would spawn two or more snakes
+and play until only one snake remains.\newline\par
 
 \subsection{Tools}
-We plan to use the Gym toolkit developed by OpenAI\cite{n1}. It was built to enable a user to train his own programmed artificially intelligent agents remotely. The user interacts with the server with two simple function calls: make and step. These take care of starting the game server and taking input for the agents to act in the environment. It returns a tuple consisting of the current game pixels, the reward received since the last step, a boolean to check if the bot has died, and latency information
+We plan to use the Gym toolkit developed by OpenAI\cite{n1}. It was built to
+enable a user to train his own programmed artificially intelligent agents
+remotely. The user interacts with the server with two simple function calls:
+make and step. These take care of starting the game server and taking input
+for the agents to act in the environment. It returns a tuple consisting of the
+current game pixels, the reward received since the last step, a boolean to
+check if the bot has died, and latency information
 \newline\par
-We will first build the game environment using a python graphics toolkit and attach it with \textit{gym}. We will then implement our learning algorithm using TensorFlow\cite{n2} and attach it to the environment through Gym as the agent. \newline\par
+We will first build the game environment using a python graphics toolkit
+and attach it with \textit{gym}. We will then implement our learning algorithm
+using TensorFlow\cite{n2} and attach it to the environment through Gym as
+the agent. \newline\par
 \subsection{Performance Metrics}
 In order to rate the performance of each snake, the following equation is proposed to calculate the score
 \begin{equation}
@@ -84,13 +121,21 @@ Score=\lambda_1 Points+ \lambda_2 Kills+\lambda_3Length
 The value of \({\lambda_1,\lambda_2}\) and \({\lambda_3}\) can be experimented with to find a optimal value.
 
 \subsection{Algorithms}
-We will first try to implement a simple neural network for learning the Q-function and use its performance values as baseline to compare further algorithms.  \newline\par
+We will first try to implement a simple neural network for learning the
+Q-function and use its performance values as baseline to compare further algorithms.  \newline\par
 
 
 \subsection{Additional Objective}
 \begin{itemize}
-	\item{Explore rotational invariance: The training algorithm will see only a small square section of the environment. Since the grids are square, the strategy should be invariant to 90 (degree) rotation. Therefore it can be considered that the snake is always moving above. This can potentially reduce the search space by a factor of 4 and reduce learning time.}
-	\item{Prevent self-play instability: It may happen that the snakes, in order to survival, choose a particular region of the board and stay local to it(eat food and avoid boundary). The game may continue indefinitely without a decisive result. }
+	\item{Explore rotational invariance: The training algorithm will see only a
+  small square section of the environment. Since the grids are square, the
+  strategy should be invariant to 90 (degree) rotation. Therefore it can be
+  considered that the snake is always moving above. This can potentially
+  reduce the search space by a factor of 4 and reduce learning time.}
+	\item{Prevent self-play instability: It may happen that the snakes, in
+  order to survival, choose a particular region of the board and stay local
+  to it(eat food and avoid boundary). The game may continue indefinitely
+  without a decisive result. }
 \end{itemize}
 \section*{}
 
