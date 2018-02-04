@@ -1,0 +1,15 @@
+sudo: required
+dist: trusty
+before_install:
+- sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended
+  texlive-latex-extra texlive-fonts-extra dvipng texlive-latex-recommended
+script:
+- mkdir _build
+- pdflatex -interaction=nonstopmode -halt-on-error -output-directory _build Proposal/Proposal.tex
+deploy:
+  provider: releases
+  api_key:
+    secure: UroR0SxwWozG+EwTYr5ypaZuouYS4J9zzZKS3SSHtwFckoTXfAyVZXrG+Yu2BSAfcSKNG6rCmGl2QUyP0QSdPBwE3q1iwbRy0afAhdpc/MuOzD8HiMCV5mtDNYLCqq+SYfpzKTtevyGgqqB2kW4H/vuNhHB8kU58y6eTfbiy8/6O/HF1z08p+F/boBhyslvuR+LAkdHuXfAzuJ9IyXWc9WVGzOveYo5IBH0dBUpdeBjc1HGuZqx0u7qZ+4EuFbW8PjqKogM1UzmxMyQmnQlFm6uPPM+/adcRobAix2NyuOGU6GRfA6KegeHwdmkxuTYdwyDbVETZwOB9TpHjimSAPrTbVi+gqlIpWrSBvgHTYbWLTFEe2Bo3gBWmtdZxWTjq2U1wCR1iQSXI9lR20JI//4t0vAg3fzq0NeCyjUSFUYtP3RCcSc1PCGiTbkIc0yj/VjuQfnTz6Oy52B4sIG9Kmobmrq4r2lHZj+XBjNxrvnZmOSUOLvtho/hoTDdWHlX2fMowDXGPSY+yir+RCaToorq+AvVYE7Dkqjwr+jrRpO5XlKGau2Eha9zVaeIp4bfafgmHkWsySAtGAx6NaBCUEyoZkD0beiisZkYwRkYEeJbTcsDzP1zmVXsCBfXIGnWRme/ZuXJRiVCddjx7RLzMe92NBjcpXsuuMTWX60hamE0=
+  file: _build/Proposal.pdf
+  on:
+    tags: true
