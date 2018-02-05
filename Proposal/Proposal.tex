@@ -16,19 +16,19 @@
 \IEEEauthorblockA{\textit{University  of Florida}\\
 nitish.rath@ufl.edu}
 \and
-\IEEEauthorblockN{Srajan Paliwal}
-\IEEEauthorblockA{\textit{University of Florida}\\
-srajanpaliwal@ufl.edu}
-\and
 \IEEEauthorblockN{Sourav Dutta}
 \IEEEauthorblockA{\textit{University of Florida}\\
 duttasourav@ufl.edu}
+\and
+\IEEEauthorblockN{Srajan Paliwal}
+\IEEEauthorblockA{\textit{University of Florida}\\
+srajanpaliwal@ufl.edu}
 }
 
 \maketitle
 
 \begin{abstract}
-This project aims at solving one of the open research problems published by OpenAI\cite{n3}. This project is focused on implementing a multi-player clone of a Snake game based on the online hit \textit{slither.io}. The project aims to explore various reinforcement learning methodologies to solve the problem. This makes use of Gym toolkit by openAI as a base for reinforcement learning. 
+This project aims at solving one of the open research problems published by OpenAI\cite{n3}. This project is focused on implementing a multi-player clone of a Snake game based on the online hit \textit{slither.io}. The project aims to explore various reinforcement learning methodologies to solve the problem. This makes use of Gym toolkit by openAI as a base for reinforcement learning.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -38,17 +38,16 @@ deep learning, reinforcement learning
 \section{Introduction}
 Recently we have seen a rise in controlling agents directly from
 high-dimensional inputs like vision and speech with deep learning combined
-with reinforcement learning \cite{sd3} \cite{sd5}. These are steps toward
+with reinforcement learning \cite{sp3} \cite{sd5}. These are steps toward
 general artificial intelligence and these methods are directly applied to
-learn self play such as Alpha Go \cite{sd6} Atari \cite{sd3}. It has become
+learn self play such as Alpha Go \cite{sp9} Atari \cite{sp3}. It has become
 evident that such algorithms achieve good performance on difficult problems
 without problem specific engineering. Also, it has been observed that the
 strategies are more complex than the environment. With traditional RL the
 rewards for a step were immediately available, but with games there can be
 complex strategies as the rewards can be a result of several consecutive steps.
 These methods use a wide variety of techniques like Markov decision process,
-discounted future reward, Q-learning \cite{sd5} and
-Policy gradient \cite{sd4}.\break
+discounted future reward, Q-learning \cite{sd5} and Policy gradient \cite{sd4}.\break
 This proposal aims at solving a multi-player snake game proposed by OpenAI as a open research topic and inspired by
 \textit{slither.io} \cite{sd2} where snakes consume food to increase length and
 kills other snakes. The game will be developed as a
@@ -86,6 +85,12 @@ self-play to create a Dota 2 bot that defeated professional players in a
 constrained 1v1 match.
 
 \section{Proposed Work}
+\begin{figure*}[h]
+
+	\includegraphics[width=\linewidth]{flow.jpg}
+	\caption{Rough Flow of the algorithm}
+
+\end{figure*}
 \subsection{The Game}
 
 In this project we aim to create a AI based, multi-player snake game inspired
@@ -98,7 +103,7 @@ trap smaller snakes and kill them. The game would spawn two or more snakes
 and play until only one snake remains.\newline\par
 
 \subsection{Tools}
-We plan to use the Gym toolkit developed by OpenAI\cite{n1}. It was built to
+We plan to use the Gym toolkit developed by OpenAI\cite{sd1}. It was built to
 enable a user to train his own programmed artificially intelligent agents
 remotely. The user interacts with the server with two simple function calls:
 make and step. These take care of starting the game server and taking input
@@ -118,13 +123,6 @@ Reward = \lambda_1 Points+ \lambda_2 Kills+\lambda_3Length
 \end{equation}
 The value of \({\lambda_1,\lambda_2}\) and \({\lambda_3}\) can be experimented with to find an optimal game play.
 
-
-\begin{figure}[h]
-	
-	\includegraphics[width=\linewidth]{flow.jpg}
-	\caption{Rough Flow of the algorithm}
-
-\end{figure}
 We will first try to implement a simple neural network for learning the
 Q-functionfor a single player and increase it to two or more players. We will use its performance metrics as a baseline to compare further algorithms.  \newline\par
 
@@ -153,18 +151,12 @@ Q-functionfor a single player and increase it to two or more players. We will us
 \bibitem{sp7} Silver, D., Huang, A., Maddison, C.J., Guez, A., Sifre, L., Van Den Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V., Lanctot, M. and Dieleman, S., 2016. Mastering the game of Go with deep neural networks and tree search. nature, 529(7587), pp.484-489.
 \bibitem{sp8} Silver, D., Schrittwieser, J., Simonyan, K., Antonoglou, I., Huang, A., Guez, A., Hubert, T., Baker, L., Lai, M., Bolton, A. and Chen, Y., 2017. Mastering the game of go without human knowledge. Nature, 550(7676), p.354.
 \bibitem{sp9} Bansal, T., Pachocki, J., Sidor, S., Sutskever, I. and Mordatch, I., 2017. Emergent complexity via multi-agent competition. arXiv preprint arXiv:1710.03748.
+\bibitem{sd5} Qicheng Ma, Hadon Nash, ``Solving Multiplayer Games with Reinforcement Learning,".
+\bibitem{sd1} G. Brockman, V. Cheung, L. Pettersson, J. Schneider, J. Schulman, J. Tang, and W. Zaremba. OpenAI Gym. arXiv preprint arXiv:1606.01540, 2016.
 \bibitem{sp10} OpenAI. (August 2017). Dota 2. [online] Available at: https://blog.openai.com/dota-2/ [Accessed 1 Feb. 2018].
-\bibitem{sd1} G. Brockman, V. Cheung, L. Pettersson, J. Schneider, J. Schulman, J. Tang, and W. Zaremba. OpenAI
-Gym. arXiv preprint arXiv:1606.01540, 2016.
-\bibitem{sd2} http://slither.io/
-\bibitem{sd3} Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., et al. (2013). ``Playing Atari with deep reinforcement learning." Technical report. Deepmind Technologies, arXiv:1312.5602 [cs.LG]
-\bibitem{sd4} Bansal, T., Pachocki, J., Sidor, S., Sutskever, I., Mordatch, I.: ``Emergent complexity
-via multi-agent competition." CoRR abs/1710.03748 (2017)
-\bibitem{sd5} Qicheng Ma, Hadon Nash, ``Solving Multiplayer Games with Reinforcement Learning,"
-\bibitem{sd6} Silver, A. Huang, C. J. Maddison, A. Guez, L. Sifre, G. Van Den Driessche, J. Schrittwieser, I. Antonoglou, V. Panneershelvam, M. Lanctot, et al. ``Mastering the game of go with deep neural networks and tree search," Nature, 529(7587):484–489, 2016.
-\bibitem{n1}{1606.01540,Greg Brockman, Vicki Cheung, Ludwig Pettersson, Jonas Schneider, John Schulman, Jie Tang and Wojciech Zaremba,OpenAI Gym,2016}
-\bibitem{n2}https://www.tensorflow.org
-\bibitem{n3} {https://blog.openai.com/requests-for-research-2/}
+\bibitem{sd2} Slither.io [online] Available at: http://slither.io/ [Accessed 1 Feb. 2018].
+\bibitem{n2} TensorFlow [online] Available at: https://www.tensorflow.org [Accessed 1 Feb. 2018].
+\bibitem{n3} OpenAI Blog [online] Available at: https://blog.openai.com/requests-for-research-2/ [Accessed 1 Feb. 2018].
 \end{thebibliography}
 
 \end{document}
