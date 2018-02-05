@@ -44,12 +44,12 @@ learn self play such as Alpha Go \cite{sd6} Atari \cite{sd3}. It has become
 evident that such algorithms achieve good performance on difficult problems
 without problem specific engineering. Also, it has been observed that the
 strategies are more complex than the environment. With traditional RL the
-rewards for a step was immediately available, but with games there can be
+rewards for a step were immediately available, but with games there can be
 complex strategies as the rewards can be a result of several consecutive steps.
 These methods use a wide variety of techniques like Markov decision process,
 discounted future reward, Q-learning \cite{sd5} and
 Policy gradient \cite{sd4}.\break
-This proposal aims at solving a multi-player snake game inspired by
+This proposal aims at solving a multi-player snake game proposed by OpenAI as a open research topic and inspired by
 \textit{slither.io} \cite{sd2} where snakes consume food to increase length and
 kills other snakes. The game will be developed as a
 OpenAI Gym \cite{sd2} environment which provides an interface between the game
@@ -59,24 +59,24 @@ environment with much less stress on interacting with the game.
 \section{Related Work}
 Watkins\cite{sp1} introduced Q- learning as a simple way for training agents to learn
 optimal policies for a Markov decision process. Then, Tan\cite{sp2} further extend
-this idea to multiagents, his paper demonstrates that reinforcement learning
-multi-agents can learn cooperative behavior in a simulated social environment.
+this idea to multiagents, his paper demonstrated that 
+multi-agents can learn cooperative behavior in a simulated social environment with reinforcement learning.
 
-In past couple of years, a combination deep neural network, Q-learning and
-competitive self play have allowed researchers to train agents for a variety
-of complex tasks. Deep mind\cite{sp3} used CNN and Q-learning to train deep Q-neural
+In past couple of years, a combination of deep neural network, Q-learning and
+competitive self play has allowed researchers to train agents for a variety
+of complex tasks. DeepMind\cite{sp3} used CNN and Q-learning to train deep Q-neural
 network agent that achieved scores comparable to professional human game
 testers in 49 Atari games. This was the first example of an AI algorithm
-that can excel at different tasks. Deep further improved DQN by introducing
+that can excel at different tasks. DeepMind further improved DQN by introducing
 techniques like Double Q Learning\cite{sp4}, Prioritized Replay\cite{sp5}, Dueling DQN\cite{sp6}.  After
 that, Deep mind made a Go-bot\cite{sp7} based on a combination of deep Q-neural
 networks and tree search, that plays at the level of the strongest human
 players. Neural networks were trained by supervised learning from human
-expert moves, and by reinforcement learning. The tree search algorithm
+expert moves and by reinforcement learning. The tree search algorithm
 combined neural network evaluations with Monte Carlo rollouts. In 2017, Alpha
 Go zero\cite{sp8} introduced an algorithm that learns without any human inputs.
-This algorithm learns through reinforcement self-play from scratch i.e it start
- with random plays. The search algorithms to evaluate moves used a single
+This algorithm learns through reinforcement self-play from scratch i.e. it starts
+ with random plays and keeps improving itself. The search algorithms to evaluate moves used a single
  neural network without Monte Carlo rollouts.
 
 OpenAI experimented with competitive and cooperative self-play\cite{sp9}. They simulated
@@ -88,7 +88,7 @@ constrained 1v1 match.
 \section{Proposed Work}
 \subsection{The Game}
 
-In this project we aim to create a, AI based, multi-player snake game inspired
+In this project we aim to create a AI based, multi-player snake game inspired
 by the online game \textit{slither.io}. Food items would appear randomly on
 the game board. The snakes would gain a unit length after every second food
 item consumed on the board. A snake would be considered dead if it hits the
@@ -103,20 +103,20 @@ enable a user to train his own programmed artificially intelligent agents
 remotely. The user interacts with the server with two simple function calls:
 make and step. These take care of starting the game server and taking input
 for the agents to act in the environment. It returns a tuple consisting of the
-current game pixels, the reward received since the last step, a boolean to
-check if the bot has died, and latency information
+current game pixels and the reward received since the last step, a boolean to
+check if the bot has died, and latency information.
 \newline\par
 We will first build the game environment using a python graphics toolkit
-and attach it with \textit{Gym}. We will then implement our learning algorithm
+and attach it with Gym. We will then implement our learning algorithm
 using TensorFlow\cite{n2} and attach it to the environment through Gym as
 the agent. \newline\par
 
-\subsection{Algorithms}
-In order to encourage the snake to increase its length and at the same time kill other snakes, the following equation is proposed to calculate the reward
+\subsection{Approach}
+In order to encourage the snake to increase its length and at the same time kill other snakes, the following equation is proposed to calculate the reward.
 \begin{equation}
-Score=\lambda_1 Points+ \lambda_2 Kills+\lambda_3Length
+Reward = \lambda_1 Points+ \lambda_2 Kills+\lambda_3Length
 \end{equation}
-The value of \({\lambda_1,\lambda_2}\) and \({\lambda_3}\) can be experimented with to find a optimal value.
+The value of \({\lambda_1,\lambda_2}\) and \({\lambda_3}\) can be experimented with to find an optimal game play.
 
 
 \begin{figure}[h]
@@ -126,19 +126,19 @@ The value of \({\lambda_1,\lambda_2}\) and \({\lambda_3}\) can be experimented w
 
 \end{figure}
 We will first try to implement a simple neural network for learning the
-Q-function and use its performance values as baseline to compare further algorithms.  \newline\par
+Q-functionfor a single player and increase it to two or more players. We will use its performance metrics as a baseline to compare further algorithms.  \newline\par
 
 
 \subsection{Additional Objective}
 \begin{itemize}
 	\item{Explore rotational invariance: The training algorithm will see only a
-  small square section of the environment. Since the grids are square, the
+  small square section of the environment. Since the viewpoint is square, the
   strategy should be invariant to 90 (degree) rotation. Therefore it can be
   considered that the snake is always moving above. This can potentially
   reduce the search space by a factor of 4 and reduce learning time.}
 	\item{Prevent self-play instability: It may happen that the snakes, in
-  order to survival, choose a particular region of the board and stay local
-  to it(eat food and avoid boundary). The game may continue indefinitely
+  order to survive, choose a particular region of the board and stay local
+  to it (eat food and avoid boundary). The game may continue indefinitely
   without a decisive result. }
 \end{itemize}
 \section*{}
