@@ -1,0 +1,17 @@
+\documentclass{article}
+\begin{document}
+\section{JavaScript Pygame}
+We further enhanced the environment for multi-player agents. We added a capability to spawn more than one snakes or agents which can be independently controlled by different algorithms. The environment takes an array of actions for each agent and executes it. Then it returns the state of the environment as an array for each agent. The evironment is sent with respect to each agent. The agent sees itself in one color and the other snakes are colored in red. This helps distinguish other players when the environment screenshot is sent. Before sending the data for a agent the canvas is redrawn with updated colors without executing any movement.
+\break
+\break
+We tried a windowed environment for out analysis. It is very similar to a real life scenario where the player is present in a large arena but is able to view only its surroundings. For each agent a small rectangular section is cropped and returned for training. The entire dimension is same as before which is 720px x 480px but the game objets and movements are scaled down four times. This increases the area but does not increase the actual number of pixels displayed. Pygame runs very slowly when a large number of pixels have to be updated at high frames per second. Keeping the number of pixels same allows us to run the pygame without increases any time for rendering. The window is of size 180px x 120px and does not change always as the agent moves. The window remains static unless the player moves to the edge of the window. Once the player moves towards the edge of the window, the window bounds are re-calculated according to the updated poisition of the player. This is done individually for each agent as each one of them sees their surrounding.
+\break
+\break
+The other change that we made in the environment was the reward structure. We added rewards for killing other snakes and dying. These rewards can be tweaked when the environment is instantiated. Using the different reards for killing the environment can be made cooperative or competitives. This way different agent behaviors can be learned.
+\break
+\break
+Sometimes, the snake is stuck in a loop while training. This affects training as the it does not add any new scenario to train. We added a max step count for the game to avoid such a scenario. Similarly, a max score was also added. The game stopped when any agent reached this score. This is to avoid the game to run infinitely since the food keeps appearing after consuming.
+
+\section{Experiment work}
+To test our agent with other agent behaviors, we developed an agent which randomly moves in the canvas and avoids hitting boundaries and other snakes. While another agent was trained using reinforcement learning technique.
+\end{document}
