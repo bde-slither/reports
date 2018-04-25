@@ -30,11 +30,11 @@
 	\maketitle
 
 	\begin{abstract}
-		This project aims at solving one of the open research problems published by OpenAI\cite{n3}. This project is focused on implementing a multi-player clone of a Snake game based on the online hit \textit{slither.io}. The project aims to explore various reinforcement learning methodologies to solve the problem. This makes use of Gym toolkit by openAI as a base for reinforcement learning.
+		This project aims at solving one of the open research problems published by OpenAI\cite{n3}. This project is focused on implementing a multi-player clone of a Snake game based on the online hit \textit{slither.io}. The project aims to explore various reinforcement learning methodologies to solve the problem. This makes use of Gym toolkit by openAI as a base for reinforcement learning.  Further we want to see how to control the behaviour of the snakes by changing the reward structures, viz., competitive and co-operative. The project also aims at making the game environment a bit more complex than to see the effect of techniques like transfer learning and curriculum learning. 
 	\end{abstract}
 
 	\begin{IEEEkeywords}
-		deep learning, reinforcement learning
+		deep learning, reinforcement learning, Multi-Agent, Transfer Learning, Agent Behavior
 	\end{IEEEkeywords}
 
 	\section{Introduction}
@@ -54,7 +54,9 @@
 	OpenAI Gym \cite{sd2} environment which provides an interface between the game
 	and the learning algorithm. It allows developers to focus on the learning
 	environment with much less stress on interacting with the game.
-
+	
+	
+The project primarily uses Deep Q-Netowrks as agents to learn the environment and act. We have made use of techniques like transfer learning and curriculum learning to reuse the learned weights in a given set of constraints in another. We have experimented on the behaviour of the snakes by altering the reward structure. The behaviour we explored was competitive and co-operative. We have well documented our approach, key elements of our project and results in this report. 
 	\section{Related Work}
 	Watkins\cite{sp1} introduced Q- learning as a simple way for training agents to learn
 	optimal policies for a Markov decision process. Then, Tan\cite{sp2} further extend
@@ -89,36 +91,68 @@
 	\break
 	We would like to experiment this on a multi-agent snake game where the snakes can be rewarded not only on the amount of food consumed but how many snakes are alive at any given moment. In a collaborative environment the snakes should avoid killing other snakes and avoid death to consume the available food. However, in a competitive environment a snake should focus on how it is able to stay alive longer and consume more food.
 
-
+\begin{figure*}[]
+	
+	\includegraphics[width=\linewidth]{flow.jpg}
+	\caption{Rough Flow of the algorithm}
+	\label{sia}
+	
+\end{figure*}
+\begin{figure*}[]
+	
+	\includegraphics[width=\linewidth]{multi_agent.jpg}
+	\caption{Rough Flow of the algorithm}
+	\label{ma}
+	
+\end{figure*}
 	\section{System Architecture}
-	\begin{figure*}[]
-
-		\includegraphics[width=\linewidth]{flow.jpg}
-		\caption{Rough Flow of the algorithm}
-		\label{test}
-
-	\end{figure*}
-	\begin{figure}[]
-
-		\includegraphics[scale=0.5]{model.png}
-		\caption{Network Model}
-		\label{model}
-
-	\end{figure}
-	Our system consists of three major components: Interface, Environment and Agent, with Interface acting as the bridge between the game(Environment) and Agent(algorithm).
+		
+	Our system consists of three major components: Interface, Environment and Agent, with Interface acting as the bridge between the game(Environment) and Agent(algorithm). Fig. \label{[sia]} shows our system architecture for the single player environment. For the multi-player version we added a wrapper on top the agents to function a interface between the environment and the agents. This was done inorder to preserve data flow sanity. The architecture for the multi-player system is given in Fig. \label{[ma]}
 
 	\subsection{Interface}
 	We are using OpenAI Gym\cite{sd3} as an Interface between the game and the training agent. OpenAI Gym provides APIs to interact with the game environment. It is a toolkit for developing and comparing reinforcement learning algorithms and provides some pre-built game environments to experiment with. For these games we can focus primarily on the algorithm and not worry about how the game works. Interactions with the game include initializing a game, ending or resetting the ongoing game and stepping through the game. The step function takes one action from a pre-defined set of actions called "action space". On completion of the step function, an "observation space" is returned. The observation space contains the game state after an action has been performed and varies from game to game. It can be as simple as the current game snapshot  or any complex data like coordinates and speed of each entity in the game. It also contains a reward for the current action taken and a flag which states whether the game ended or not.
 	\subsection{Environment}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/single.jpeg}
+		\caption{Snapshot of single player Environment}
+		\label{se}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/multi.jpeg}
+		\caption{Snapshot of multi player Environment}
+		\label{me}
+		
+	\end{figure}
 	The environment is the game that the agent tries to learn. Our first requirement was to build a snake game compatible with OpenAI Gym APIs. One of the snake game implementations which was similar to what we required was implemented by Loonride\cite{sd4}. We modified the game and added a layer on top of it to act as wrapper and make it compatible with Gym. The game was built in JavaScript using Phaser game engine. For the ease of use and make minimal changes we simulated the browser experience in a headless mode using selenium web driver.
 	\break
 	\break
 	We modified the game to expose information like coordinates of the snakes, scores, whether the snakes is alive or not, food positions and the current game snapshot. This information is used by the agent algorithm to learn the game play. Furthermore, the input to the snake bot was also changed to take inputs from the action space instead of input devices such as mouse or keyboard.
 	\break
 	Upon training it was discovered that the process was too slow due to communication latencies in the selenium driver. Therefore, we moved to a simpler game environement, although this was a more realistic environment.The python game uses PyGame and is much faster than the JavaScript versoin. The snake in this case has less degrees of freedom. It can go either forward or turn left or right. It is a pixelated game where the entire game space can be consired as nxn blocks or big pixels and the snake can move one block at a time. Similarly the food is of size 1x1 block. We have two versions of the game. First, there is only one food and a new food appears randomly on the screen when it is consumed. In the second version there are more than one food. This game also runs on server in a headless or non-ui mode.
+	
+	After completing our tests on a single player snake game. We made some changes to the environment to adapt to a multi player game and made it more complex to make the agent learn complex environment.  We added a capability to spawn more than one snakes or agents which can be independently controlled by different algorithms. The environment takes an array of actions for each agent and executes it. Then it returns the state of the environment as an array for each agent. The evironment is sent with respect to each agent. The agent sees itself in one color and the other snakes are colored in red. This helps distinguish other players when the environment screenshot is sent. Before sending the data for a agent the canvas is redrawn with updated colors without executing any movement.
+	\break
+	\break
+	We tried a windowed environment for out analysis. It is very similar to a real life scenario where the player is present in a large arena but is able to view only its surroundings. For each agent a small rectangular section is cropped and returned for training. The entire dimension is same as before which is 720px x 480px but the game objets and movements are scaled down four times. This increases the area but does not increase the actual number of pixels displayed. Pygame runs very slowly when a large number of pixels have to be updated at high frames per second. Keeping the number of pixels same allows us to run the pygame without increases any time for rendering. The window is of size 180px x 120px and does not change always as the agent moves. The window remains static unless the player moves to the edge of the window. Once the player moves towards the edge of the window, the window bounds are re-calculated according to the updated poisition of the player. This is done individually for each agent as each one of them sees their surrounding.
+	\break
+	\break
+	The other change that we made in the environment was the reward structure. We added rewards for killing other snakes and dying. These rewards can be tweaked when the environment is instantiated. Using the different reards for killing the environment can be made cooperative or competitives. This way different agent behaviors can be learned.
+	\break
+	\break
+	Sometimes, the snake is stuck in a loop while training. This affects training as the it does not add any new scenario to train. We added a max step count for the game to avoid such a scenario. Similarly, a max score was also added. The game stopped when any agent reached this score. This is to avoid the game to run infinitely since the food keeps appearing after consuming. 
 
 
 	\subsection{Agent}
+		\begin{figure}[]
+			
+			\includegraphics[scale=0.5]{model.png}
+			\caption{Network Model}
+			\label{model}
+			
+		\end{figure}
 	The agent here is the algorithm that runs the players in the game. In our work we chose to use Q-learning, a form of reinforcement learning to figure out the game play by using the feedback provided by the game. Our training algorithm was inspired by Deep Q-learning technique proposed by DeepMind\cite{n4}.
 	\break
 	\break
@@ -126,13 +160,40 @@
 	\break
 	\break
 	We made use of the network as proposed by DeepMind as a agent. Our network receives the game state and decides on a action. It then uses the feedback, rewards and observation pertaining to the action, from the game to backpropagate and approximates a Q-function for efficient game play.
-	Figure\ref{model} shows the model that we implemented
+	Figure\ref{model} shows the model that we implemented.
+	\break
+	\break
+	For the single player environment, the game environment was modified and developed in a way to make it compliant with OpenAI Gym and the training functions in the Keras-RL implementation.
+	\break
+	\break 
+	
+	For the multi-player environment, using the same learning implementation would be difficulty. In order for the algorithm to run smoothly data flow sanity is essential. The observtaions and rewards of each each agent should be delivered to each agents learning algorithm for proper training. Hence an interface was built between OpenAI gym and the leaning algorithms. This interface took care of maintaining the data flow and proper running of the system. This new implementation was an extension of the Keras-RL implementation. Functionalities for proper logging, parsing observations and sending inputs to the network was implemented. 
 
 	\section{Algorithms}
 	Our work makes use of reinforcement learning, Q-learning to be specific to observe the game and approximate a appropriate function for game play. The following give details about the algorithm and policies used to train it.
 
 	\subsection{Q-Learning}
-	Q- learning is a reinforcement learning technique where a function Q(s,a), where is the s is the present state and a is the action to be performed, is learnt to produce efficient actions for a given state s. The function is highly environment dependent and varies with every environment. In simple words it gives the optimal score that can be gained in the current state so that the overall game score is maximum at the end of it. This means that the function must take in account the possible future rewards to determine an efficient action. To accomplish this, it must be aware of the rewards of all <s,a> pairs. In simple game environment like tic-tac-toe, all <s,a> pairs can be listed in a table and Q-values updated to converge at a optimum point. In scenarios like atari games or Snake, the number of <s,a> pairs is too large to record. Also most of this may never be visited. Hence, DeepMind came up with a modified Q-learning technique, \textit{Deep Q-Networks}, based on Deep learning to efficiently approximate the Q-function.
+	
+	\begin{figure*}[]
+		
+		\includegraphics[width=\linewidth]{pmodel.png}
+		\caption{Rough Flow of the algorithm}
+		\label{pmodel}
+		
+	\end{figure*}
+	Q- learning is a reinforcement learning technique where a function Q(s,a), where is the s is the present state and a is the action to be performed, is learnt to produce efficient actions for a given state s. The function is highly environment dependent and varies from environment to environment. 
+	\break
+	\break
+	In simple words it gives the optimal score that can be gained in the current state so that the overall game score is maximum at the end of it. This means that the function must take in account the possible future rewards to determine an efficient action. To accomplish this, it must be aware of the rewards of all <s,a> pairs.
+	\break
+	\break
+	 In simple game environment like tic-tac-toe, all <s,a> pairs can be listed in a table and Q-values updated to converge at a optimum point. In scenarios like atari games or Snake, the number of <s,a> pairs is too large to record. Also most of this may never be visited. Hence, DeepMind came up with a modified Q-learning technique, \textit{Deep Q-Networks}, based on Deep learning to efficiently approximate the Q-function. The algorithms works great for environments with a limited action state. 
+	 \break
+	 \break
+	 The network architecture for the model is based on a CNN. This helps in identifying the image elements of the observation. In addition it uses a additional memory during training to store data/states-action experienced till now. It is refreshed so as to update the experiences with training. This helps in string state-action pairs with better Q-values. The algorithm, during training, takes a sample from this memory and calculates the future reward using a discount factor.
+	 \break
+	 \break
+	  For testing however it does not need an additional memory. It determines action using solely the CNN. 
 
 	\subsection{Exploration-Exploitation Dilemma}
 	As discussed above, it is difficult to map all <s,a> pairs in complex game environments. There is always a dilemma between choosing a new action for a state to explore new states or going on with the previous learned actions to exploit more from the game play. Thus there has to be a effective trade-off between the two for learning the game optimally. DeepMind came up with policies to deal with this. Our work implements them and gives a comparative result.
@@ -164,11 +225,11 @@
 
 	For our snake environment, we trained a single snake in a fixed window with multiple food items. Then, we used the weights of the neural network there to train the agent on a bigger field with floating window. This significantly improved training as shown in the figure.
 
-	\begin{figure}
+	\begin{figure*}
 	  \centering
-	  \includegraphics[scale=1.5]{tflearbing.png}
+	  \includegraphics[scale=3]{tflearbing.png}
 	  \caption{The figure shows difference of rewards achieved in case of training from scratch compared to use of transfer learning and curriculum learning. Pink - training form scratch. Blue- Transfer learning and Curriculum learning. }
-	\end{figure}
+	\end{figure*}
 
 	\subsection{Curriculum Learning}
 	The main concept of curriculum learning based on the fact that humans learn effectively when examples are presented in a structured manner instead of random. This strategy allows reinforcement learning agents to learn in a similar manner. The agents are represented by a task that becomes more and more complex over the course of training, with a final goal to be the intended most complex task. This leads to reduced training time because initial search space is reduced a lot. This also allows the agent to stuck in local minima. Now, we will detail how this technique helped us to train our snake agent.
@@ -177,65 +238,129 @@
 
 
 	In conclusion, Curriculum learning and transfer learning makes sense in case of Deep reinforce learning as training is online and weight sharing is a very commonly used strategy is Deep learning. These techniques are necessary for convergence an optimal solution in our snake environment. These techniques allow agents to learn more complex behaviour like avoiding each other and attacking in a competitive and cooperative setting.
-
+	
+	\subsection{Additional Ideas}
+	
+	
 	\section{Results And Discussion}
 	\begin{figure}[]
 
-		\includegraphics[scale=0.23]{ep_step.jpeg}
-		\caption{Number of steps per Episode}
+		\includegraphics[width=\linewidth]{ep_step.jpeg}
+		\caption{Number of steps per Episode for single player}
 		\label{step}
 
 	\end{figure}
 	\begin{figure}[]
 
-		\includegraphics[scale=0.23]{ep_reward.jpeg}
-		\caption{Rewards per episode}
+		\includegraphics[width = \linewidth]{ep_reward.jpeg}
+		\caption{Rewards per episode for single player}
 		\label{reward}
 
 	\end{figure}
 	\subsection{Experimental Setup}
-	The algorithms and the game environment were coded using python (using Keras and pygame libraries). The code was downloaded into a azure server and executed on it after setting up required configurations. We used a standard NC6 azure server with Nvidia K80 GPUs. The server run on linux.
+	The algorithms and the game environment were coded using python (using Keras, tensorflow and pygame libraries). The code was downloaded into a azure server and executed on it after setting up required configurations. We used a standard NC6 azure server with Nvidia K80 GPUs. The server run on linux. 
 	\break
 	\break
-	The algorithm were run for 1.5 million steps and the reward and other logs were recorded.We saved weights for our agents at every 25,000 steps. This was done to analyze agent performance at various stages of learning.
-	\subsection{Results}
+	The algorithm were run for 3 million steps and the reward and other logs were recorded.We saved weights for our agents at every 2,50,000 steps. This was done to analyze agent performance at various stages of learning.
+	\subsection{How To Train}
+	
+	Before running the scripts, along with Python3, Tensorflow, Keras and OpenAI Gym should be installed. The code can be downloaded from our github repository\cite{code}.
+	
+	To train the network run
+	\break
+	\break
+	\textit{python dqn\_snake.py --mode=train --env-name=<env-name}
+	\break
+	\break
+	And to test it
+	\break
+	\break
+	\textit{ python dqn\_snake.py --mode=test --env-name=env-name --weights= weights-file}
+	
 
+	\subsection{Results}
+	
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_comp_reward.png}
+		\caption{Competitive Snakes Reward Plot}
+		\label{rcms}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_comp_step.png}
+		\caption{Step vs. Episode Plot for competitive snake}
+		\label{scms}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_coop_reward.png}
+		\caption{Reward Plot for a cooperative}
+		\label{rcos}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_coop_step.png}
+		\caption{Step vs. Episode plot for a cooperative Snake}
+		\label{scos}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_window_comp_reward.png}
+		\caption{Reward plot for competitive  snakes in window environment}
+		\label{rcmsw}
+		
+	\end{figure}
+	\begin{figure}[]
+		
+		\includegraphics[width = \linewidth]{plot/snake_window_comp_step.png}
+		\caption{Reward plot for competitive  snakes in window environment}
+		\label{scmsw}
+		
+	\end{figure}\begin{figure}[]
+	
+	\includegraphics[width = \linewidth]{plot/snake_window_coop_reward.png}
+	\caption{Reward plot for competitive  snakes in window environment}
+	\label{rcosw}
+	
+\end{figure}\begin{figure}[]
+
+\includegraphics[width = \linewidth]{plot/snake_window_coop_step.png}
+\caption{Reward plot for competitive  snakes in window environment}
+\label{scosw}
+
+\end{figure}
 	Logs for the execution were monitored using Tensorboard library. Tensorboard is developed as a wrapper for Tensorflow and works with Keras library for monitoring performance of the training process.
 	\break
 	\break
-	As can be seen from Fig.\ref{step} as the number of steps in training continued the reward obtained after each step also increased significantly. The blue plot in the figure is for the training with \(\epsilon\)GreedyPolicy and the pink one corresponds to the training with BoltzmannQpolicy.
+	As can be seen from Figures as the number of steps in training continued to increase the reward obtained after each step also increased significantly.
 	\break
 	\break
-	Figure.\ref{reward} shows that the number of steps per episode increases with training. This implies that as the training continues the snake is learning to stay alive for a longer durations than before.
+	From the figures with single plots, it shows that the number of steps per episode increases with training. This implies that as the training continues the snake is learning to stay alive for a longer durations than before.
 
 	\subsection{Observations}
-	We would like to discuss some interesting patterns that we observed the agent learning. Initially, an agent acts randomly and most of the games end by the agent hitting itself. By 125 thousand steps, the agent learns to avoid hitting itself and moves mostly in a straight line. At this point, most games end by agent hitting the boundary wall. By 325 thousand steps,  the agent learns to avoid hitting the wall by just moving in a loop. This is a good temporary strategy, but the agent is not receiving a significant reward. So in just 50 thousand steps more, it learns to break out of the loop and chase foods. The game length is short at this point due to collisions with walls and itself in attempt to eat food. The overall performance further improves as we give our agent more time to train.
+	We would like to discuss some interesting patterns that we observed the agent learning. In single player, Initially, an agent acts randomly and most of the games end by the agent hitting itself. By 125 thousand steps, the agent learns to avoid hitting itself and moves mostly in a straight line. At this point, most games end by agent hitting the boundary wall. By 325 thousand steps,  the agent learns to avoid hitting the wall by just moving in a loop. This is a good temporary strategy, but the agent is not receiving a significant reward. So in just 50 thousand steps more, it learns to break out of the loop and chase foods. The game length is short at this point due to collisions with walls and itself in attempt to eat food. The overall performance further improves as we give our agent more time to train.
+	\break
+	\break
+	In the multiplayer, as the training increases, the snakes learn to not hit each other and die.
 
-\section{Future Work}
-As of now, our team has successfully implemented a single player snake game environment, implemented a DQN learning algorithm for training it and has also run mltiple training iterations to fine tune the game play.
-\break
-\break
+\section{Conclusion}
+In this project we have implemented explored reinforcement learning and applied to multi player game environments. The environment is able to learn just from the image inputs. Thus it is a powerful tool going ahead in the field of deep learning.
 
-We have also started working on the multi player version of the game. The game environment is up and running and we have implemented a simple DQN learning algorithm for it by initiating multiple networks and training them separately on each agent by the rewards each agent receives from the game.
-The training for it seems to take a lot of time. A possible reason for this may be due to the sequential pattern of training (each agent gets trained sequentially one after the other durig BackProp). We plan to eliminate this by exploring python threads and implementing them efficiently with Tensorflow.
-\break
-\break
-\subsection{Task Completion Percentages}
+We first experimented with single player environemnts like ball paddle game, single player snake game etc. We used the Keras-RL library to implemet DQN algorithm. We then developed environments for multi player snake and extended the Keras-RL library for multi-agent scenario. With reinforcement learning the agent learned to play and avoid obstacles.
+
+\section{Team Coordination}
 \begin{itemize}
-\item{Create a sigle Player Environment for snake Game} : 100\%	done
-\item{Develop a training algorithm for Single Player Game play} :100\% done
-\item{Create a Multi Player Environment for snake Game} : 100\%	done
-\item{Develop a training algorithm for Multi Player Game play} :40\% done
-\item{Explore other network architectures for GamePlay} :0\% done
+
+	\item Development of Environment: Sourav Dutta:80\%, Srajan Paliwal:10\%, Nitish Rath:10\%
+	\item Single-agent Algortihm: Sourav Dutta:10\%, Srajan Paliwal:80\%, Nitish Rath:10\%
+\item	Multi-agent Algorithm : Sourav Dutta:5\%, Srajan Paliwal:20\%, Nitish Rath:75\%  
+
 \end{itemize}
-
-\break
-\break
-In addition to fine tuning the multi player game, we also hav plans to explore other architectures to see if the training can be made better and the game play improved.
-\break
-\break
-
-
 \begin{thebibliography}{00}
 \bibitem{sp1} Watkins, C.J. and Dayan, P., 1992. Q-learning. Machine learning, 8(3-4), pp.279-292.
 \bibitem{sp2} Tan, M., 1993. Multi-agent reinforcement learning: Independent vs. cooperative agents. In Proceedings of the tenth international conference on machine learning (pp. 330-337).
@@ -256,7 +381,9 @@ In addition to fine tuning the multi player game, we also hav plans to explore o
 \bibitem{n3} OpenAI Blog [online] Available at: https://blog.openai.com/requests-for-research-2/ [Accessed 1 Feb. 2018].
 \bibitem{n4}https://arxiv.org/abs/1312.5602
 \bibitem{n5}https://github.com/keras-rl/keras-rl
+\bibitem{code}https://github.com/bde-slither/
 \bibitem{sd7}Ardi Tampuu, Tambet Matiisen, Dorian Kodelja, Ilya Kuzovkin, Kristjan Korjus, Juhan Aru, Jaan Aru, Raul Vicente, ``Multiagent Cooperation and Competition with Deep Reinforcement Learning".
+
 \end{thebibliography}
 
 \end{document}
